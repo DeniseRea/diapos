@@ -574,6 +574,319 @@ kbd {
   color: var(--text-muted);
 }
 
+/* --- Use Case Card: template, timeline, microinteractions, responsive --- */
+.use-case-card {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  align-items: start;
+}
+.use-case-card.info-below {
+  grid-template-columns: 1fr 420px;
+}
+.info-below-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(16,24,40,0.85), rgba(16,24,40,0.75));
+  border: 1px solid var(--line);
+  grid-column: 1 / -1;
+}
+.info-below-block > div { min-height: 0; }
+
+/* Make each info section look like the side panel cards used elsewhere */
+.info-below-block > div {
+  background: var(--cream-2);
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(240,246,252,0.06);
+}
+
+.info-below-block strong {
+  display: block;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.info-below-block p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.info-below-block .alt-flow {
+  margin: 0;
+  padding: 0;
+}
+
+.info-below-block .alt-flow .timeline-step {
+  background: transparent;
+  border: none;
+  padding: 6px 0;
+}
+
+.info-below-block .alt-flow .step-number {
+  min-width: 32px;
+  height: 32px;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 880px) {
+  .info-below-block { grid-template-columns: 1fr; }
+}
+
+.side-thumbnail { justify-self: end; }
+.side-thumbnail .thumb-wrap { max-width: 380px; }
+
+@media (max-width: 880px) {
+  .use-case-card.info-below { grid-template-columns: 1fr; }
+  .side-thumbnail { order: -1; justify-self: center; }
+}
+
+  /* alternative small thumb styling */
+  .alt-thumb .thumb-wrap.small { max-width: 220px; max-height: 140px; overflow: hidden; border-radius: 8px; }
+  .alt-thumb .thumb-wrap.small img { width: 100%; height: auto; object-fit: contain; display: block; }
+  .alt-thumb .preview-btn { padding: 6px 10px; font-size: 0.8rem; }
+
+  /* Info block: make alt-flow present steps in columns on wide screens */
+  @media (min-width: 1100px) {
+    .info-below-block .alt-flow {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 10px;
+    }
+  }
+
+  /* Improve long paragraph wrapping and spacing */
+  .info-below-block p { white-space: normal; overflow-wrap: break-word; }
+  .info-below-block { align-items: start; }
+
+.use-case-main {
+  display: block;
+}
+
+.usecase-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.usecase-icon {
+  color: var(--accent);
+}
+
+.usecase-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.uc-actor {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.collapse-button {
+  margin-left: auto;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(240,246,252,0.04);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.usecase-timeline {
+  margin-top: 14px;
+}
+
+.usecase-timeline ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.timeline-step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--cream-2);
+  border: 1px solid var(--line);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  position: relative;
+}
+
+.timeline-step:focus,
+.timeline-step:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  background: rgba(34,197,94,0.04);
+  outline: none;
+}
+
+.step-number {
+  min-width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(240,246,252,0.04);
+  color: var(--text-muted);
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+/* Horizontal flow for large screens: use available width and draw connectors */
+@media (min-width: 900px) {
+  .usecase-timeline ol {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 12px 6px;
+    /* Allow wrapping so items that don't fit flow to the next row instead of overflowing */
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .timeline-step {
+    flex: 0 0 220px;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    /* Prevent breaking inside a step when wrapping */
+    break-inside: avoid;
+  }
+
+  .timeline-step::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -18px;
+    width: 36px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, rgba(255,255,255,0.06) 100%);
+    border-radius: 2px;
+    transform: translateY(-50%);
+    /* If the step wrapped to a new line, the connector may overlap; reduce visual impact */
+    opacity: 0.95;
+  }
+
+  .timeline-step:last-child::after { display: none; }
+
+  .step-number {
+    align-self: flex-start;
+  }
+
+  .step-body p { color: var(--text-muted); }
+}
+
+/* Side panel improvements: contrast, spacing and sticky behavior */
+.use-case-side {
+  background: linear-gradient(180deg, rgba(16,24,40,0.85), rgba(16,24,40,0.75));
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  color: var(--text-light);
+}
+
+.use-case-side p { color: rgba(240,246,252,0.78); margin: 6px 0 0; }
+
+.use-case-side { position: sticky; top: 110px; align-self: start; }
+
+/* Image improvements: fit, max height and pleasant background */
+.evidence-shot {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-radius: 12px;
+}
+
+.evidence-shot img { width: 100%; height: auto; display: block; object-fit: contain; max-height: 48vh; }
+
+/* Smaller figcaption text and better contrast for the caption */
+.evidence-shot figcaption { padding: 8px 12px; background: rgba(16,24,40,0.85); color: rgba(240,246,252,0.72); font-size: 0.72rem; }
+
+/* Alt-flow specific smaller step styling */
+.alt-flow .timeline-step { padding: 8px; border-radius: 8px; }
+
+/* Focus outline for keyboard users */
+.timeline-step:focus { outline: 3px solid rgba(34,197,94,0.14); }
+.collapse-button:focus { outline: 3px solid rgba(59,130,246,0.12); }
+
+/* Two-column preview layout (image left, info right) */
+.two-column-preview {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 18px;
+  margin-top: 16px;
+  align-items: start;
+}
+
+.thumbnail { display: grid; gap: 10px; justify-items: center; }
+.thumb-wrap { width: 100%; height: 100%; max-width: 380px; border-radius: 10px; overflow: hidden; background: rgba(255,255,255,0.02); display: grid; place-items: center; }
+.thumb-wrap img { width: 100%; height: auto; object-fit: contain; display: block; }
+.thumb-actions { display: flex; justify-content: center; }
+.preview-btn { display: inline-flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 10px; background: rgba(240,246,252,0.04); color: var(--text-light); border: 1px solid rgba(240,246,252,0.04); cursor: pointer; }
+.preview-btn span { font-weight: 700; font-size: 0.88rem; }
+
+.side-info { padding: 16px; }
+
+@media (max-width: 880px) {
+  .two-column-preview { grid-template-columns: 1fr; }
+  .thumbnail { order: 1; }
+  .side-info { order: 2; }
+}
+
+.step-body p {
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.use-case-side {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+}
+
+.use-case-side strong { color: var(--accent); }
+
+.evidence-shot img { width: 100%; height: auto; display: block; }
+
+.usecase-timeline.collapsed ol { max-height: 0; overflow: hidden; transition: max-height 220ms ease; }
+.usecase-timeline.open ol { max-height: 2000px; transition: max-height 320ms ease; }
+
+.alt-flow {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.evidence-shot .collapse-button {
+  padding: 6px 10px;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 880px) {
+  .deck-shell { grid-template-columns: 1fr; }
+  .deck-rail { display: none; }
+  .menu-button { display: inline-flex; }
+  .use-case-card { grid-template-columns: 1fr; }
+  .use-case-side { order: 2; }
+  .use-case-main { order: 1; }
+  .slide-header h1 { font-size: 1.45rem; }
+}
+
 .guide-layout {
   grid-template-columns: 360px 1fr;
 }

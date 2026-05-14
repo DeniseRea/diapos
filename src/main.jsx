@@ -823,224 +823,321 @@ function DashboardSlide({ onImageClick }) {
 
 function CU01Slide({ onImageClick }) {
   return (
-    <div className="use-case-layout">
-      <div className="use-case-main">
-        <h3>Control de cambios mediante Pull Request</h3>
-        <p className="uc-actor">Actor: Autor del cambio · GitHub Actions · Revisor</p>
-        <div className="use-case-flow">
-          <ol>
-            <li>Desarrollador crea rama de trabajo a partir de main.</li>
-            <li>Realiza cambios y ejecuta pruebas locales.</li>
-            <li>Commit y push de la rama al repositorio remoto.</li>
-            <li>Abre Pull Request dirigido hacia main.</li>
-            <li>GitHub Actions ejecuta pipeline automaticamente.</li>
-            <li>build_and_test: instala dependencias y ejecuta pruebas.</li>
-            <li>security_scan: revisa dependencias con npm audit.</li>
-            <li>Revisor analiza PR, cambios y resultados de checks.</li>
-            <li>Si todo es aprobado, el PR se fusiona con main.</li>
-            <li>Pipeline se re-ejecuta para validar estado final.</li>
-          </ol>
-        </div>
-        <figure className="evidence-shot" style={{ marginTop: 10, borderRadius: 14, overflow: "hidden" }}>
-          <img src="/evidencias/image4.png" alt="Diagrama CU-01" onClick={() => onImageClick("/evidencias/image4.png")} />
-          <figcaption style={{ padding: "8px 12px", background: "#101827", color: "#8b949e", fontSize: "0.72rem" }}>
-            Diagrama de caso de uso: Control de cambios mediante Pull Request
-          </figcaption>
-        </figure>
-      </div>
-      <div className="use-case-side">
-        <div>
-          <strong>Precondiciones</strong>
-          <p>Repositorio en GitHub, rama main protegida, workflow devsecops.yml configurado, reglas de proteccion activas.</p>
-        </div>
-        <div>
-          <strong>Flujo alternativo / Error</strong>
-          <p>Si pruebas fallan, PR marcado como fallido. Si security_scan detecta vulnerabilidad alta, el pipeline se detiene. Cambios directos a main son bloqueados por reglas de proteccion.</p>
-        </div>
-        <figure className="evidence-shot" style={{ borderRadius: 14, overflow: "hidden" }}>
-          <img src="/evidencias/image5.png" alt="Flujo alternativo CU-01" onClick={() => onImageClick("/evidencias/image5.png")} />
-          <figcaption style={{ padding: "6px 10px", background: "#101827", color: "#8b949e", fontSize: "0.7rem" }}>
-            Flujo alternativo y proteccion de rama principal
-          </figcaption>
-        </figure>
-        <div>
-          <strong>Resultado esperado</strong>
-          <p>Cambio integrado solo tras aprobar pruebas, escaneo de seguridad y revision. Trazabilidad completa de ramas, commits y validaciones.</p>
-        </div>
-      </div>
-    </div>
+    <UseCaseCard
+      icon={GitBranch}
+      title="Control de cambios mediante Pull Request"
+      actor="Autor del cambio · GitHub Actions · Revisor"
+      steps={[
+        'Desarrollador crea rama de trabajo a partir de main.',
+        'Realiza cambios y ejecuta pruebas locales.',
+        'Commit y push de la rama al repositorio remoto.',
+        'Abre Pull Request dirigido hacia main.',
+        'GitHub Actions ejecuta pipeline automaticamente.',
+        'build_and_test: instala dependencias y ejecuta pruebas.',
+        'security_scan: revisa dependencias con npm audit.',
+        'Revisor analiza PR, cambios y resultados de checks.',
+        'Si todo es aprobado, el PR se fusiona con main.',
+        'Pipeline se re-ejecuta para validar estado final.',
+      ]}
+      image="/evidencias/image4.png"
+      previewLayout="side-by-side"
+      imageAlt="Diagrama CU-01"
+      infoPosition="below"
+      alternativeImage="/evidencias/image5.png"
+      alternativeImageAlt="Flujo alternativo CU-01"
+      preconditions="Repositorio en GitHub, rama main protegida, workflow devsecops.yml configurado, reglas de proteccion activas."
+      alternative="Si pruebas fallan, PR marcado como fallido. Si security_scan detecta vulnerabilidad alta, el pipeline se detiene. Cambios directos a main son bloqueados por reglas de proteccion."
+      alternativeSteps={[
+        'Si las pruebas fallan, el PR se marca como fallido y los jobs posteriores no avanzan.',
+        'Si security_scan encuentra vulnerabilidades altas/criticas, el pipeline se detiene y se notifica a los responsables.',
+        'Intentos de push directo a main son rechazados por las reglas de proteccion de la rama.'
+      ]}
+      result="Cambio integrado solo tras aprobar pruebas, escaneo de seguridad y revision. Trazabilidad completa de ramas, commits y validaciones."
+      onImageClick={onImageClick}
+    />
   );
 }
 
 function CU02Slide({ onImageClick }) {
   return (
-    <div className="use-case-layout">
-      <div className="use-case-main">
-        <h3>Validacion automatica con pruebas unitarias</h3>
-        <p className="uc-actor">Actor: Pipeline GitHub Actions · Job build_and_test</p>
-        <div className="use-case-flow">
-          <ol>
-            <li>Se realiza push a main o se abre un Pull Request.</li>
-            <li>Workflow DevSecOps inicia el job build_and_test.</li>
-            <li>Instala dependencias con npm ci.</li>
-            <li>Ejecuta npm test (framework Jest).</li>
-            <li>Si las pruebas pasan, el workflow continua con security_scan.</li>
-            <li>En pushes a main, puede continuar con deploy.</li>
-          </ol>
-        </div>
-        <div className="pipeline-box" style={{ marginTop: 12 }}>
-          <strong>Prueba objetiva: riskChecker</strong>
-          <p>Verifica que la logica de calculo del Security Risk Ratio sea determinista y libre de regresiones.</p>
-        </div>
-        <figure className="evidence-shot" style={{ marginTop: 10, borderRadius: 14, overflow: "hidden" }}>
-          <img src="/evidencias/image6.png" alt="Diagrama CU-02" onClick={() => onImageClick("/evidencias/image6.png")} />
-          <figcaption style={{ padding: "8px 12px", background: "#101827", color: "#8b949e", fontSize: "0.72rem" }}>
-            Diagrama: Validacion automatica con pruebas unitarias en CI
-          </figcaption>
-        </figure>
-      </div>
-      <div className="use-case-side">
-        <div>
-          <strong>Precondiciones</strong>
-          <p>Repositorio con pruebas unitarias para riskChecker, Jest configurado, workflow con npm ci y npm test.</p>
-        </div>
-        <div>
-          <strong>Flujo alternativo</strong>
-          <p>Si alguna prueba falla, npm test finaliza con codigo distinto de cero. El job build_and_test falla y los jobs security_scan y deploy no se ejecutan.</p>
-        </div>
-        <div>
-          <strong>Resultado esperado</strong>
-          <p>PR con cambios correctos: pruebas pasan y pipeline avanza. Cambios que rompen pruebas: pipeline se detiene en build_and_test y reporta fallo.</p>
-        </div>
-      </div>
-    </div>
+    <UseCaseCard
+      icon={TestTube2}
+      title="Validacion automatica con pruebas unitarias"
+      actor="Pipeline GitHub Actions · Job build_and_test"
+      steps={[
+        'Se realiza push a main o se abre un Pull Request.',
+        'Workflow DevSecOps inicia el job build_and_test.',
+        'Instala dependencias con npm ci.',
+        'Ejecuta npm test (framework Jest).',
+        'Si las pruebas pasan, el workflow continua con security_scan.',
+        'En pushes a main, puede continuar con deploy.',
+      ]}
+      image="/evidencias/image6.png"
+      imageAlt="Diagrama CU-02"
+      previewLayout="side-by-side"
+      infoPosition="below"
+      preconditions="Repositorio con pruebas unitarias para riskChecker, Jest configurado, workflow con npm ci y npm test."
+      alternative="Si alguna prueba falla, npm test finaliza con codigo distinto de cero. El job build_and_test falla y los jobs security_scan y deploy no se ejecutan."
+      result="PR con cambios correctos: pruebas pasan y pipeline avanza. Cambios que rompen pruebas: pipeline se detiene en build_and_test y reporta fallo."
+      onImageClick={onImageClick}
+    />
   );
 }
 
 function CU03Slide({ onImageClick }) {
   return (
-    <div className="use-case-layout">
-      <div className="use-case-main">
-        <h3>Deteccion y correccion de vulnerabilidades</h3>
-        <p className="uc-actor">Actor: Equipo de Desarrollo · GitHub Actions · Base CVE/NVD</p>
-        <div className="use-case-flow">
-          <ol>
-            <li>Integrante anade libreria y sube cambios al repositorio.</li>
-            <li>GitHub Actions se activa y lee la lista de dependencias.</li>
-            <li>Sistema compara dependencias con base de datos CVE/NVD.</li>
-            <li>Si no encuentra problemas, da visto bueno y permite continuar.</li>
-          </ol>
-        </div>
-        <figure className="evidence-shot" style={{ marginTop: 10, borderRadius: 14, overflow: "hidden" }}>
-          <img src="/evidencias/image7.png" alt="Diagrama CU-03" onClick={() => onImageClick("/evidencias/image7.png")} />
-          <figcaption style={{ padding: "8px 12px", background: "#101827", color: "#8b949e", fontSize: "0.72rem" }}>
-            Diagrama PlantUML: Deteccion y correccion de vulnerabilidades (CVE/NVD)
-          </figcaption>
-        </figure>
-      </div>
-      <div className="use-case-side">
-        <div>
-          <strong>Precondiciones</strong>
-          <p>package.json con lista de dependencias, GitHub Actions configurado con reglas automaticas de revision.</p>
-        </div>
-        <div>
-          <strong>Flujo alternativo</strong>
-          <p>Sistema encuentra vulnerabilidad grave: detiene el proceso, muestra mensaje con la libreria afectada y el motivo. Equipo actualiza a version segura, vuelve a subir y el pipeline continua.</p>
-        </div>
-        <div>
-          <strong>Resultado esperado</strong>
-          <p>Ninguna version de la aplicacion se publica si contiene dependencias con vulnerabilidades conocidas.</p>
-        </div>
-        <div>
-          <strong>Relacion extend</strong>
-          <p>El bloqueo de proceso y la notificacion de fallos se modelan como relacion extend del caso de uso principal.</p>
-        </div>
-      </div>
-    </div>
+    <UseCaseCard
+      icon={Search}
+      title="Deteccion y correccion de vulnerabilidades"
+      actor="Equipo de Desarrollo · GitHub Actions · Base CVE/NVD"
+      steps={[
+        'Integrante anade libreria y sube cambios al repositorio.',
+        'GitHub Actions se activa y lee la lista de dependencias.',
+        'Sistema compara dependencias con base de datos CVE/NVD.',
+        'Si no encuentra problemas, da visto bueno y permite continuar.',
+      ]}
+      image="/evidencias/image7.png"
+      previewLayout="side-by-side"
+      imageAlt="Diagrama CU-03"
+      infoPosition="below"
+      preconditions="package.json con lista de dependencias, GitHub Actions configurado con reglas automaticas de revision."
+      alternative="Sistema encuentra vulnerabilidad grave: detiene el proceso, muestra mensaje con la libreria afectada y el motivo. Equipo actualiza a version segura, vuelve a subir y el pipeline continua."
+      alternativeSteps={[
+        'Sistema detecta vulnerabilidad grave en la dependencia y detiene el pipeline.',
+        'Se notifica la libreria afectada y el motivo del bloqueo.',
+        'Equipo actualiza a una version segura, commit y push; el pipeline se re-ejecuta y continua si pasa.'
+      ]}
+      result="Ninguna version de la aplicacion se publica si contiene dependencias con vulnerabilidades conocidas."
+      onImageClick={onImageClick}
+    />
   );
 }
 
 function CU04Slide({ onImageClick }) {
   return (
-    <div className="use-case-layout">
-      <div className="use-case-main">
-        <h3>Despliegue automatico controlado</h3>
-        <p className="uc-actor">Actor: Pipeline GitHub Actions · Solution Manager</p>
-        <div className="use-case-flow">
-          <ol>
-            <li>Pull Request aprobado se fusiona hacia main.</li>
-            <li>Workflow devsecops.yml se dispara por push a main.</li>
-            <li>build_and_test: instalacion y pruebas unitarias con Jest.</li>
-            <li>security_scan: auditoria con npm audit --audit-level=high.</li>
-            <li>Ambos jobs exitosos → se inicia deploy (needs: [security_scan]).</li>
-            <li>npm run build genera carpeta dist/ con archivos estaticos.</li>
-            <li>upload-pages-artifact@v3 empaqueta y sube dist/.</li>
-            <li>deploy-pages@v4 publica en GitHub Pages.</li>
-          </ol>
-        </div>
-        <figure className="evidence-shot" style={{ marginTop: 10, borderRadius: 14, overflow: "hidden" }}>
-          <img src="/evidencias/image8.png" alt="Workflow DevSecOps exitoso" onClick={() => onImageClick("/evidencias/image8.png")} />
-          <figcaption style={{ padding: "8px 12px", background: "#101827", color: "#8b949e", fontSize: "0.72rem" }}>
-            Evidencia: Workflow completo ejecutado exitosamente en GitHub Actions
-          </figcaption>
-        </figure>
-      </div>
-      <div className="use-case-side">
-        <div>
-          <strong>Precondiciones</strong>
-          <p>Workflow devsecops.yml configurado, reglas de proteccion en main, GitHub Pages activado con origen GitHub Actions.</p>
-        </div>
-        <div>
-          <strong>Flujos alternativos</strong>
-          <p>Si build_and_test falla: pipeline detenido. Si security_scan detecta vulnerabilidades: despliegue bloqueado. Merge directo sin PR: rechazado por reglas de proteccion.</p>
-        </div>
-        <div>
-          <strong>Resultado esperado</strong>
-          <p>Aplicacion publicada en GitHub Pages solo cuando el codigo es seguro y funcional. Dashboard disponible publicamente reflejando estado de seguridad actual.</p>
-        </div>
-      </div>
-    </div>
+    <UseCaseCard
+      icon={Play}
+      title="Despliegue automatico controlado"
+      actor="Pipeline GitHub Actions · Solution Manager"
+      steps={[
+        'Pull Request aprobado se fusiona hacia main.',
+        'Workflow devsecops.yml se dispara por push a main.',
+        'build_and_test: instalacion y pruebas unitarias con Jest.',
+        'security_scan: auditoria con npm audit --audit-level=high.',
+        'Ambos jobs exitosos → se inicia deploy (needs: [security_scan]).',
+        'npm run build genera carpeta dist/ con archivos estaticos.',
+        'upload-pages-artifact@v3 empaqueta y sube dist/.',
+        'deploy-pages@v4 publica en GitHub Pages.',
+      ]}
+      image="/evidencias/image8.png"
+      previewLayout="side-by-side"
+      imageAlt="Workflow DevSecOps exitoso"
+      infoPosition="below"
+      preconditions="Workflow devsecops.yml configurado, reglas de proteccion en main, GitHub Pages activado con origen GitHub Actions."
+      alternative="Si build_and_test falla: pipeline detenido. Si security_scan detecta vulnerabilidades: despliegue bloqueado. Merge directo sin PR: rechazado por reglas de proteccion."
+      result="Aplicacion publicada en GitHub Pages solo cuando el codigo es seguro y funcional. Dashboard disponible publicamente reflejando estado de seguridad actual."
+      onImageClick={onImageClick}
+    />
   );
 }
 
 function CU05Slide({ onImageClick }) {
   return (
-    <div className="use-case-layout">
+    <UseCaseCard
+      icon={BarChart3}
+      title="Visualizacion del estado DevSecOps"
+      actor="Equipo de Desarrollo · GitHub Actions"
+      steps={[
+        'Sistema inicia monitoreo consumiendo payload JSON de la API.',
+        'Dashboard visualiza Security Risk Ratio R = V / D.',
+        'Equipo verifica que el indicador este en Risk Low (R = 0).',
+        'Interfaz confirma integracion de cadena DevSecOps.',
+        'CI: pruebas unitarias Jest pasaron satisfactoriamente.',
+        'Seguridad: npm audit no bloqueo el proceso.',
+        'CD: despliegue automatico hacia produccion completado.',
+      ]}
+      image="/evidencias/image9.png"
+      previewLayout="side-by-side"
+      imageAlt="Dashboard DevSecOps evidencia"
+      infoPosition="below"
+      preconditions="Backend (src/index.js) exponiendo API REST. Motor riskChecker.js procesando densidad de vulnerabilidades. Dashboard publicado en GitHub Pages."
+      alternative="Risk Medium (0 < R < 0.2): dashboard alerta sobre deuda tecnica manejable. Risk High (R >= 0.2): superficie de ataque inaceptable, requiere intervencion inmediata."
+      result="Interfaz centralizada que comunica en tiempo real la salud del proyecto, permitiendo toma de decisiones basada en el Security Risk Ratio."
+      onImageClick={onImageClick}
+    />
+  );
+}
+
+function UseCaseCard({ icon: Icon, title, actor, steps = [], image, imageAlt, preconditions, alternative, alternativeSteps = [], result, onImageClick, previewLayout, infoPosition, alternativeImage, alternativeImageAlt }) {
+  const [open, setOpen] = React.useState(true);
+  const onKeyOpenImage = (e, src) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onImageClick && onImageClick(src);
+    }
+  };
+
+  return (
+    <div className={`use-case-card ${infoPosition === 'below' ? 'info-below' : ''}`} role="region" aria-label={title}>
       <div className="use-case-main">
-        <h3>Visualizacion del estado DevSecOps</h3>
-        <p className="uc-actor">Actor: Equipo de Desarrollo · GitHub Actions</p>
-        <div className="use-case-flow">
+        <div className="usecase-header">
+          {Icon && <Icon size={24} className="usecase-icon" />}
+          <div>
+            <h3>{title}</h3>
+            <p className="uc-actor">Actor: {actor}</p>
+          </div>
+          <button className="collapse-button" aria-expanded={open} onClick={() => setOpen((v) => !v)} aria-label="Mostrar u ocultar detalles">
+            {open ? 'Ocultar' : 'Mostrar'}
+          </button>
+        </div>
+
+        <div className={`usecase-timeline ${open ? 'open' : 'collapsed'}`}>
           <ol>
-            <li>Sistema inicia monitoreo consumiendo payload JSON de la API.</li>
-            <li>Dashboard visualiza Security Risk Ratio R = V / D.</li>
-            <li>Equipo verifica que el indicador este en Risk Low (R = 0).</li>
-            <li>Interfaz confirma integracion de cadena DevSecOps.</li>
-            <li>CI: pruebas unitarias Jest pasaron satisfactoriamente.</li>
-            <li>Seguridad: npm audit no bloqueo el proceso.</li>
-            <li>CD: despliegue automatico hacia produccion completado.</li>
+            {steps.map((step, idx) => (
+              <li key={idx} className="timeline-step" tabIndex={0}>
+                <span className="step-number">{String(idx + 1).padStart(2, '0')}</span>
+                <div className="step-body">
+                  <p>{step}</p>
+                </div>
+              </li>
+            ))}
           </ol>
         </div>
-        <figure className="evidence-shot" style={{ marginTop: 10, borderRadius: 14, overflow: "hidden" }}>
-          <img src="/evidencias/image9.png" alt="Dashboard DevSecOps evidencia" onClick={() => onImageClick("/evidencias/image9.png")} />
-          <figcaption style={{ padding: "8px 12px", background: "#101827", color: "#8b949e", fontSize: "0.72rem" }}>
-            Evidencia visual del dashboard con Security Risk Ratio y estado DevSecOps
-          </figcaption>
-        </figure>
+
+        {image && previewLayout !== 'side-by-side' && (
+          <figure className="evidence-shot" style={{ marginTop: 10, borderRadius: 14, overflow: 'hidden' }}>
+            <img src={image} alt={imageAlt || title} onClick={() => onImageClick && onImageClick(image)} onKeyDown={(e) => onKeyOpenImage(e, image)} tabIndex={0} style={{ cursor: 'pointer' }} />
+            <figcaption style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '8px 12px', background: '#101827', color: '#8b949e', fontSize: '0.72rem' }}>
+              <span style={{ flex: 1 }}>{imageAlt}</span>
+              <button className="collapse-button" onClick={() => onImageClick && onImageClick(image)} aria-label={`Ver imagen ${imageAlt}`}>Ver imagen</button>
+            </figcaption>
+          </figure>
+        )}
       </div>
-      <div className="use-case-side">
-        <div>
-          <strong>Precondiciones</strong>
-          <p>Backend (src/index.js) exponiendo API REST. Motor riskChecker.js procesando densidad de vulnerabilidades. Dashboard publicado en GitHub Pages.</p>
+
+      {/* If infoPosition is 'below', render a full-width info block under the main area */}
+      {infoPosition === 'below' ? (
+        <>
+          {previewLayout === 'side-by-side' && (
+            <div className="side-thumbnail">
+              <div className="thumb-wrap" role="button" tabIndex={0} onClick={() => onImageClick && onImageClick(image)} onKeyDown={(e) => onKeyOpenImage(e, image)} aria-label={`Vista previa ${imageAlt}`}>
+                <img src={image} alt={imageAlt || title} />
+              </div>
+              <div className="thumb-actions">
+                <button className="preview-btn" onClick={() => onImageClick && onImageClick(image)} aria-label={`Ampliar ${imageAlt}`}>
+                  <Search size={14} />
+                  <span>Haz clic para ampliar</span>
+                </button>
+              </div>
+
+              {alternativeImage && (
+                <div className="alt-thumb" style={{ marginTop: 10 }}>
+                  <div className="thumb-wrap small" role="button" tabIndex={0} onClick={() => onImageClick && onImageClick(alternativeImage)} onKeyDown={(e) => onKeyOpenImage(e, alternativeImage)} aria-label={`Flujo alternativo ${alternativeImageAlt}`}>
+                    <img src={alternativeImage} alt={alternativeImageAlt || 'Flujo alternativo'} />
+                  </div>
+                  <div className="thumb-actions">
+                    <button className="preview-btn" onClick={() => onImageClick && onImageClick(alternativeImage)} aria-label={`Abrir flujo alternativo`}>
+                      <Search size={12} />
+                      <span>Flujo alternativo</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="info-below-block">
+            <div>
+              <strong>Precondiciones</strong>
+              <p>{preconditions}</p>
+            </div>
+            <div>
+              <strong>Flujo alternativo</strong>
+              {alternativeSteps && alternativeSteps.length > 0 ? (
+                <ol className="alt-flow">
+                  {alternativeSteps.map((s, i) => (
+                    <li key={i} tabIndex={0} className="timeline-step">
+                      <span className="step-number">{String(i + 1).padStart(2, '0')}</span>
+                      <div className="step-body"><p>{s}</p></div>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p>{alternative}</p>
+              )}
+            </div>
+            <div>
+              <strong>Resultado esperado</strong>
+              <p>{result}</p>
+            </div>
+          </div>
+        </>
+      ) : previewLayout === 'side-by-side' ? (
+        <div className="two-column-preview">
+          <div className="thumbnail">
+            <div className="thumb-wrap" role="button" tabIndex={0} onClick={() => onImageClick && onImageClick(image)} onKeyDown={(e) => onKeyOpenImage(e, image)} aria-label={`Vista previa ${imageAlt}`}>
+              <img src={image} alt={imageAlt || title} />
+            </div>
+            <div className="thumb-actions">
+              <button className="preview-btn" onClick={() => onImageClick && onImageClick(image)} aria-label={`Ampliar ${imageAlt}`}>
+                <Search size={14} />
+                <span>Haz clic para ampliar</span>
+              </button>
+            </div>
+          </div>
+          <aside className="use-case-side side-info">
+            <div>
+              <strong>Precondiciones</strong>
+              <p>{preconditions}</p>
+            </div>
+            <div>
+              <strong>Flujo alternativo</strong>
+              {alternativeSteps && alternativeSteps.length > 0 ? (
+                <ol className="alt-flow">
+                  {alternativeSteps.map((s, i) => (
+                    <li key={i} tabIndex={0} className="timeline-step">
+                      <span className="step-number">{String(i + 1).padStart(2, '0')}</span>
+                      <div className="step-body"><p>{s}</p></div>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p>{alternative}</p>
+              )}
+            </div>
+            <div>
+              <strong>Resultado esperado</strong>
+              <p>{result}</p>
+            </div>
+          </aside>
         </div>
-        <div>
-          <strong>Flujo alternativo</strong>
-          <p>Risk Medium (0 &lt; R &lt; 0.2): dashboard alerta sobre deuda tecnica manejable. Risk High (R &gt;= 0.2): superficie de ataque inaceptable, requiere intervencion inmediata.</p>
-        </div>
-        <div>
-          <strong>Resultado esperado</strong>
-          <p>Interfaz centralizada que comunica en tiempo real la salud del proyecto, permitiendo toma de decisiones basada en el Security Risk Ratio.</p>
-        </div>
-      </div>
+      ) : (
+        <aside className="use-case-side">
+          <div>
+            <strong>Precondiciones</strong>
+            <p>{preconditions}</p>
+          </div>
+          <div>
+            <strong>Flujo alternativo</strong>
+            {alternativeSteps && alternativeSteps.length > 0 ? (
+              <ol className="alt-flow">
+                {alternativeSteps.map((s, i) => (
+                  <li key={i} tabIndex={0} className="timeline-step">
+                    <span className="step-number">{String(i + 1).padStart(2, '0')}</span>
+                    <div className="step-body"><p>{s}</p></div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p>{alternative}</p>
+            )}
+          </div>
+          <div>
+            <strong>Resultado esperado</strong>
+            <p>{result}</p>
+          </div>
+        </aside>
+      )}
     </div>
   );
 }
