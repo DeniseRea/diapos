@@ -9,6 +9,7 @@ import {
   BookOpen,
   Box,
   CheckCircle,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Code2,
@@ -433,6 +434,24 @@ function SlideHeader({ slide }) {
   );
 }
 
+function CommandReveal({ title, hint, code, ...props }) {
+  return (
+    <details className="command-reveal" {...props}>
+      <summary className="command-strip">
+        <Terminal size={20} />
+        <div className="command-copy">
+          <strong>{title}</strong>
+          <span>{hint}</span>
+        </div>
+        <ChevronDown size={18} className="command-chevron" />
+      </summary>
+      <pre className="command-code">
+        <code>{code}</code>
+      </pre>
+    </details>
+  );
+}
+
 function CoverSlide({ onImageClick }) {
   return (
     <div className="cover-grid">
@@ -590,26 +609,52 @@ function LogicSlide(_) {
 
 function CISecuritySlide(_) {
   const steps = [
-    ["1", "Push / PR", "El workflow se dispara en push a main o al crear/actualizar un Pull Request."],
-    ["2", "build_and_test", "Descarga codigo, configura Node.js 20, instala dependencias con npm ci y ejecuta npm test."],
-    ["3", "security_scan", "Ejecuta npm audit --audit-level=high. Si detecta vulnerabilidades altas o criticas, detiene el pipeline."],
-    ["4", "Gate de seguridad", "Actua como puerta de control: solo permite continuar al despliegue si no hay vulnerabilidades criticas."],
+    {
+      num: "1",
+      title: "Push / PR",
+      desc: "El workflow se dispara en push a main o al crear/actualizar un Pull Request.",
+      code: "on:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]",
+    },
+    {
+      num: "2",
+      title: "build_and_test",
+      desc: "Descarga codigo, configura Node.js 20, instala dependencias con npm ci y ejecuta npm test.",
+      code: "jobs:\n  build_and_test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n      - run: npm ci\n      - run: npm test",
+    },
+    {
+      num: "3",
+      title: "security_scan",
+      desc: "Ejecuta npm audit --audit-level=high. Si detecta vulnerabilidades altas o criticas, detiene el pipeline.",
+      code: "jobs:\n  security_scan:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm audit --audit-level=high",
+    },
+    {
+      num: "4",
+      title: "Gate de seguridad",
+      desc: "Actua como puerta de control: solo permite continuar al despliegue si no hay vulnerabilidades criticas.",
+      code: "jobs:\n  deploy:\n    needs: [security_scan]\n    if: github.ref == 'refs/heads/main'\n    steps:\n      - run: npm run build\n      - uses: actions/upload-pages-artifact@v3\n      - uses: actions/deploy-pages@v4",
+    },
   ];
 
   return (
     <div className="pipeline-devs">
       <div className="pipeline-block">
         <h3>Workflow: devsecops.yml</h3>
-        {steps.map(([num, title, desc], idx) => (
+        {steps.map((step, idx) => (
           <motion.div
-            className="pipeline-box"
-            key={num}
+            key={step.num}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.1 }}
           >
-            <strong><span style={{ color: "#22c55e", marginRight: 8 }}>{num}.</span>{title}</strong>
-            <p>{desc}</p>
+            <details className="pipeline-step-reveal">
+              <summary className="pipeline-box">
+                <strong><span style={{ color: "#22c55e", marginRight: 8 }}>{step.num}.</span>{step.title}</strong>
+                <p>{step.desc}</p>
+              </summary>
+              <pre className="pipeline-step-code">
+                <code>{step.code}</code>
+              </pre>
+            </details>
           </motion.div>
         ))}
       </div>
@@ -642,7 +687,7 @@ function CISecuritySlide(_) {
           <strong style={{ color: "#f59e0b" }}>deploy</strong>
           <p>Depende de security_scan via needs. Solo se ejecuta si build_and_test y security_scan son exitosos en main.</p>
         </motion.div>
-        <div className="command-strip" style={{ marginTop: 8 }}>
+        <div className="command-strip-static" style={{ marginTop: 8 }}>
           <Terminal size={20} />
           <code>npm audit --audit-level=high</code>
           <span>Puerta de control DevSecOps</span>
@@ -764,11 +809,11 @@ function CDSlide(_) {
           <span>sample_dev_sec_ops</span>
         </div>
       </div>
-      <div className="command-strip">
-        <Terminal size={20} />
-        <code>npm run build && deploy</code>
-        <span>Construccion + empaquetado + publicacion en GitHub Pages</span>
-      </div>
+      <CommandReveal
+        title="Ver comando de despliegue"
+        hint="Construccion + empaquetado + publicacion en GitHub Pages"
+        code="npm run build && deploy"
+      />
     </div>
   );
 }
