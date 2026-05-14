@@ -608,6 +608,7 @@ function LogicSlide(_) {
 }
 
 function CISecuritySlide(_) {
+  const deployJobCode = "jobs:\n  deploy:\n    needs: [security_scan]\n    if: github.ref == 'refs/heads/main'\n    steps:\n      - run: npm run build\n      - uses: actions/upload-pages-artifact@v3\n      - uses: actions/deploy-pages@v4";
   const steps = [
     {
       num: "1",
@@ -679,13 +680,19 @@ function CISecuritySlide(_) {
           <p>npm audit --audit-level=high. Identifica vulnerabilidades conocidas. Si encuentra high/critical, el pipeline se detiene.</p>
         </motion.div>
         <motion.div
-          className="pipeline-box"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <strong style={{ color: "#f59e0b" }}>deploy</strong>
-          <p>Depende de security_scan via needs. Solo se ejecuta si build_and_test y security_scan son exitosos en main.</p>
+          <details className="pipeline-step-reveal">
+            <summary className="pipeline-box">
+              <strong style={{ color: "#f59e0b" }}>deploy</strong>
+              <p>Depende de security_scan via needs. Solo se ejecuta si build_and_test y security_scan son exitosos en main.</p>
+            </summary>
+            <pre className="pipeline-step-code">
+              <code>{deployJobCode}</code>
+            </pre>
+          </details>
         </motion.div>
         <div className="command-strip-static" style={{ marginTop: 8 }}>
           <Terminal size={20} />

@@ -1323,6 +1323,14 @@ code {
   display: none;
 }
 
+.command-reveal > .command-code {
+  display: block !important;
+}
+
+.command-reveal:not([open]) > .command-code {
+  pointer-events: none;
+}
+
 .command-strip {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -1744,6 +1752,14 @@ code {
 
 .pipeline-step-reveal summary::-webkit-details-marker {
   display: none;
+}
+
+.pipeline-step-reveal > .pipeline-step-code {
+  display: block !important;
+}
+
+.pipeline-step-reveal:not([open]) > .pipeline-step-code {
+  pointer-events: none;
 }
 
 .pipeline-step-reveal summary.pipeline-box:hover {
